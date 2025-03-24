@@ -11,6 +11,7 @@ export default defineNuxtConfig({
 
   modules: [
     '@pinia/nuxt',
+    '@nuxtjs/color-mode',
   ],
 
   // If you want to disable TypeScript (optional)
@@ -18,5 +19,11 @@ export default defineNuxtConfig({
     shim: false
   },
 
-  compatibilityDate: '2025-03-24'
+  compatibilityDate: '2025-03-24',
+
+  colorMode: {
+    classSuffix: '',
+    preference: 'system',
+    fallback: 'light'
+  },
 })

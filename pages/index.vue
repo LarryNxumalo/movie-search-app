@@ -16,16 +16,16 @@
       </div>
       <div v-else-if="featuredMovies.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         <div v-for="movie in featuredMovies" :key="movie.imdbID" 
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+          class="movie-card dark-mode-transition">
           <NuxtLink :to="`/${movie.imdbID}`">
             <img 
               :src="movie.Poster !== 'N/A' ? movie.Poster : '/placeholder.png'" 
               :alt="movie.Title"
               class="w-full h-[400px] object-cover"
             >
-            <div class="p-4">
-              <h3 class="font-semibold text-lg mb-2">{{ movie.Title }}</h3>
-              <p class="text-gray-600">{{ movie.Year }}</p>
+            <div class="movie-card-content">
+              <h3 class="font-semibold text-lg mb-2 dark:text-gray-200">{{ movie.Title }}</h3>
+              <p class="text-gray-600 dark:text-gray-400">{{ movie.Year }}</p>
             </div>
           </NuxtLink>
         </div>
@@ -34,22 +34,21 @@
 
     <!-- Featured TV Shows Section -->
     <section class="mb-12">
-      <h2 class="text-2xl font-semibold mb-6">Featured TV Shows</h2>
+      <h2 class="text-2xl font-semibold mb-6 dark:text-gray-200">Featured TV Shows</h2>
       <div v-if="loadingSeries" class="text-center py-8">
         <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
       </div>
-      <div v-else-if="featuredSeries.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <div v-for="show in featuredSeries" :key="show.imdbID" 
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <div v-else-if="featuredSeries.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+        <div v-for="show in featuredSeries" :key="show.imdbID" class="movie-card">
           <NuxtLink :to="`/${show.imdbID}`">
             <img 
               :src="show.Poster !== 'N/A' ? show.Poster : '/placeholder.png'" 
               :alt="show.Title"
               class="w-full h-[400px] object-cover"
             >
-            <div class="p-4">
-              <h3 class="font-semibold text-lg mb-2">{{ show.Title }}</h3>
-              <p class="text-gray-600">{{ show.Year }}</p>
+            <div class="movie-card-content">
+              <h3 class="font-semibold text-lg mb-2 dark:text-gray-200">{{ show.Title }}</h3>
+              <p class="text-gray-600 dark:text-gray-400">{{ show.Year }}</p>
             </div>
           </NuxtLink>
         </div>
@@ -58,19 +57,18 @@
 
     <!-- Recently Viewed Section -->
     <section v-if="recentlyViewed.length" class="mb-12">
-      <h2 class="text-2xl font-semibold mb-6">Recently Viewed</h2>
-      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-        <div v-for="item in recentlyViewed" :key="item.imdbID" 
-          class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+      <h2 class="text-2xl font-semibold mb-6 dark:text-gray-200">Recently Viewed</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        <div v-for="item in recentlyViewed" :key="item.imdbID" class="movie-card">
           <NuxtLink :to="`/${item.imdbID}`">
             <img 
               :src="item.Poster !== 'N/A' ? item.Poster : '/placeholder.png'" 
               :alt="item.Title"
               class="w-full h-[400px] object-cover"
             >
-            <div class="p-4">
-              <h3 class="font-semibold text-lg mb-2">{{ item.Title }}</h3>
-              <p class="text-gray-600">{{ item.Year }}</p>
+            <div class="movie-card-content">
+              <h3 class="font-semibold text-lg mb-2 dark:text-gray-200">{{ item.Title }}</h3>
+              <p class="text-gray-600 dark:text-gray-400">{{ item.Year }}</p>
             </div>
           </NuxtLink>
         </div>

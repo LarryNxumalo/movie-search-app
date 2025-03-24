@@ -1,6 +1,6 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-8">TV Series</h1>
+    <h1 class="text-3xl font-bold mb-8 dark:text-gray-200">TV Series</h1>
 
     <!-- Search Form -->
     <form @submit.prevent="handleSearch" class="mb-8">
@@ -9,12 +9,12 @@
           v-model="searchQuery" 
           type="text" 
           placeholder="Search for TV series..."
-          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="search-input flex-1"
           required
         >
         <button 
           type="submit"
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="btn btn-primary"
           :disabled="loading"
         >
           {{ loading ? 'Searching...' : 'Search' }}
@@ -28,28 +28,27 @@
     </div>
 
     <div v-else-if="error" class="text-center py-12">
-      <p class="text-red-500">{{ error }}</p>
+      <p class="text-red-500 dark:text-red-400">{{ error }}</p>
     </div>
 
-    <div v-else-if="series.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div v-for="show in series" :key="show.imdbID" 
-        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div v-else-if="series.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div v-for="show in series" :key="show.imdbID" class="movie-card">
         <NuxtLink :to="`/${show.imdbID}`">
           <img 
             :src="show.Poster !== 'N/A' ? show.Poster : '/placeholder.png'" 
             :alt="show.Title"
             class="w-full h-[400px] object-cover"
           >
-          <div class="p-4">
-            <h3 class="font-semibold text-lg mb-2">{{ show.Title }}</h3>
-            <p class="text-gray-600">{{ show.Year }}</p>
+          <div class="movie-card-content">
+            <h3 class="font-semibold text-lg mb-2 dark:text-gray-200">{{ show.Title }}</h3>
+            <p class="text-gray-600 dark:text-gray-400">{{ show.Year }}</p>
           </div>
         </NuxtLink>
       </div>
     </div>
 
     <div v-else-if="hasSearched" class="text-center py-12">
-      <p class="text-gray-600">No TV series found. Try a different search term.</p>
+      <p class="text-gray-600 dark:text-gray-400">No TV series found. Try a different search term.</p>
     </div>
   </div>
 </template>

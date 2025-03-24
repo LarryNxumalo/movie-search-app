@@ -9,12 +9,12 @@
           v-model="searchQuery" 
           type="text" 
           placeholder="Search for movies..."
-          class="flex-1 px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          class="search-input flex-1"
           required
         >
         <button 
           type="submit"
-          class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 disabled:opacity-50"
+          class="btn btn-primary"
           :disabled="loading"
         >
           {{ loading ? 'Searching...' : 'Search' }}
@@ -31,9 +31,8 @@
       <p class="text-red-500">{{ error }}</p>
     </div>
 
-    <div v-else-if="movies.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      <div v-for="movie in movies" :key="movie.imdbID" 
-        class="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div v-else-if="movies.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <div v-for="movie in movies" :key="movie.imdbID" class="movie-card">
         <NuxtLink :to="`/${movie.imdbID}`">
           <img 
             :src="movie.Poster !== 'N/A' ? movie.Poster : '/placeholder.png'" 
