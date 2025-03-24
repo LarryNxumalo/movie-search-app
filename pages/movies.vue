@@ -1,88 +1,83 @@
 <template>
   <div>
-    <h1 class="text-3xl font-bold mb-8">Movies</h1>
+    <h1 class="text-3xl font-bold mb-8 dark:text-white">Movies</h1>
 
-    <!-- Search Form -->
-    <form @submit.prevent="handleSearch" class="mb-8">
-      <div class="flex gap-4">
-        <input 
-          v-model="searchQuery" 
-          type="text" 
-          placeholder="Search for movies..."
-          class="search-input flex-1"
-          required
-        >
-        <button 
-          type="submit"
-          class="btn btn-primary"
-          :disabled="loading"
-        >
-          {{ loading ? 'Searching...' : 'Search' }}
-        </button>
-      </div>
-    </form>
+    <SearchBar 
+      :loading="loading"
+      placeholder="Search for movies..."
+      @search="handleSearch"
+    />
 
-    <!-- Results -->
-    <div v-if="loading" class="text-center py-12">
-      <div class="animate-spin h-8 w-8 border-4 border-blue-500 border-t-transparent rounded-full mx-auto"></div>
-    </div>
+    <MediaGrid 
+      :items="movies"
+      :loading="loading"
+      :error="error"
+      :show-empty="hasSearched && !movies.length"
+      empty-message="No movies found. Try a different search term."
+    />
 
-    <div v-else-if="error" class="text-center py-12">
-      <p class="text-red-500">{{ error }}</p>
-    </div>
-
-    <div v-else-if="movies.length" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-      <div v-for="movie in movies" :key="movie.imdbID" class="movie-card">
-        <NuxtLink :to="`/${movie.imdbID}`">
-          <img 
-            :src="movie.Poster !== 'N/A' ? movie.Poster : '/placeholder.png'" 
-            :alt="movie.Title"
-            class="w-full h-[400px] object-cover"
-          >
-          <div class="p-4">
-            <h3 class="font-semibold text-lg mb-2">{{ movie.Title }}</h3>
-            <p class="text-gray-600">{{ movie.Year }}</p>
-          </div>
-        </NuxtLink>
-      </div>
-    </div>
-
-    <div v-else-if="hasSearched" class="text-center py-12">
-      <p class="text-gray-600">No movies found. Try a different search term.</p>
-    </div>
+    <MediaPagination 
+      v-if="totalResults > 0"
+      :current-page="currentPage"
+      :total-pages="totalPages"
+      @page-change="handlePageChange"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 
 const { searchMedia } = useOmdb()
 
-const searchQuery = ref('')
 const movies = ref([])
 const loading = ref(false)
 const error = ref(null)
 const hasSearched = ref(false)
+const currentPage = ref(1)
+const totalResults = ref(0)
+const currentQuery = ref('marvel') // Default search term
 
-const handleSearch = async () => {
-  if (!searchQuery.value.trim()) return
+const totalPages = computed(() => Math.ceil(totalResults.value / 10))
 
+const performSearch = async (query, page) => {
   loading.value = true
   error.value = null
-  movies.value = []
-  hasSearched.value = true
 
   try {
-    const response = await searchMedia(searchQuery.value, 'movie')
+    const response = await searchMedia(query, 'movie', page)
     if (response.Response === 'True') {
       movies.value = response.Search
+      totalResults.value = parseInt(response.totalResults)
     } else {
       error.value = response.Error
+      movies.value = []
+      totalResults.value = 0
     }
   } catch (e) {
     error.value = 'An error occurred while searching. Please try again.'
+    movies.value = []
+    totalResults.value = 0
   } finally {
     loading.value = false
   }
 }
+
+const handleSearch = async (query) => {
+  currentQuery.value = query
+  currentPage.value = 1
+  hasSearched.value = true
+  await performSearch(query, 1)
+}
+
+const handlePageChange = async (page) => {
+  currentPage.value = page
+  await performSearch(currentQuery.value, page)
+  window.scrollTo({ top: 0, behavior: 'smooth' })
+}
+
+// Load initial movies
+onMounted(async () => {
+  await performSearch(currentQuery.value, 1)
+})
 </script> 
