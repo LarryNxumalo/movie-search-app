@@ -26,4 +26,8 @@ export default defineNuxtConfig({
     preference: 'system',
     fallback: 'light'
   },
+
+  app: {
+    pageTransition: { name: 'page', mode: 'out-in' }
+  }
 })
